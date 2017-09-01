@@ -1,6 +1,91 @@
-<meta charset="utf-8" lang="en"><style class="fallback">body{visibility:hidden;}</style>
+<meta charset="utf-8" lang="en">
 
                 **USD Notes**
+
+* Should be able to use CLion as a development envrionment
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~
+-DBOOST_ROOT=${ROOT}/boost/1.61.0
+-DTBB_ROOT_DIR=${ROOT}/tbb/tbb43_20150611
+-DTBB_LIBRARY=${ROOT}/tbb/tbb43_20150611/lib
+-DOPENEXR_LOCATION=${ROOT}/openexr
+-DOIIO_LOCATION=${ROOT}/oiio/1.6.14
+-DGLEW_LOCATION=${ROOT}/glew/1.11.0
+-DOPENSUBDIV_ROOT_DIR=${ROOT}/opensubd/3.0.3
+-DPTEX_LOCATION=${ROOT}/ptex/2.0.42
+-DPXR_BUILD_USD_IMAGING=OFF
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Overview of Package
+===================
+
+* cmake
+    * defaults
+    * macros
+    * modules
+* extras
+    * usd
+        * examples
+        * tutorials
+* pxr
+    * base
+        * lib
+    * imaging
+        * lib
+            * cameraUtil
+            * garch
+            * glf
+            * hd
+            * hdSt
+            * hdx
+            * hf
+            * pxOsd
+        * plugin
+            * hdEmbree
+            * hdStream
+    * usd
+        * bin
+            * sdfdump
+            * usdcat
+            * usdcheck
+            * usddiff
+            * usddumpcrate
+            * usdedit
+            * usdstitch
+            * usdstitchclips
+        * lib
+            * ar
+            * kind
+            * pcp
+            * sdf
+            * usd
+            * usdGeom
+            * usdHydra
+            * usdLux
+            * usdRi
+            * usdShade
+            * usdSkel
+            * usdUI
+            * usdUtils
+        * plugin
+            * usdAbc
+    * usdImaging
+        * bin
+        * lib
+* third_party
+    * houdini
+        * lib
+        * plugin
+    * katana
+        * lib
+        * plugin
+        * python
+    * maya
+        * lib
+        * plugin
+
+
 
 
 <!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js"></script><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
