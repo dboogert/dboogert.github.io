@@ -1,21 +1,103 @@
 <meta charset="utf-8" lang="en">
 
-                **USD Notes**
+                **Technical notes on [Pixar's USD](https://graphics.pixar.com/usd/docs/index.html)**
 
-* Should be able to use CLion as a development envrionment
 
+Notes
+=====
+
+Tasks
+-----
+
+* Compile USD at work
+    * Must support the following
+        * Houdini
+        * Maya 
+        * Imaging
+        * Alembic
+        * Embree Hydra plugin
+* Simple C++ application to read a USD file -> SceneReader
+* Simple C++ application to render a sphere using Hydra
+* Enumerate functionality of renderer
+* Viewport / 3D rendering
+    * Description of how Gaffer Renders to OpenGL now (and will the future)
+    * Description of how to render using Hydra
+* Node graph rendering
+
+Questions & Notes
+-----------------
+
+* What are the minimum number of ojbects which need to be constructed to render a sphere? 
+* **USDImaging** contains adapator classes from USD to Hydra & registry for these adaptors. How is this registry used?
+* What is in **usdHydra** compared to **USDImaging**??
+    * *Looks like* **usdHydra** *is just for Hydra shaders in USD?*
+* What are the features of USD Maya?
+* What API would be suitable (if any) for rendering the node graph?
+
+
+Build Notes
+===========
+
+For some reason PySide is required as part of the build bootstrap.
+
+Build instructions which worked for me:
+
+Build environment setup
+-----------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+export USD_INSTALL_DIR=~/dev/USD-install
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Build & Installation
+-----------------
+
+~~~~~~~~~~~~~~~~~
+pip install PySide
+python build_scripts/build_usd.py ${USD_INSTALL_DIR}
+~~~~~~~~~~~~~~~~~
+
+* Had to copy glew libraries from lib64 -> lib
+* Also glfw3 wasn't installed for OpenSubDiv using the build & I had to use my own build.
+
+
+Rumtime environment
+------------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+export USD_INSTALL_DIR=~/dev/USD-install
+export PATH=${USD_INSTALL_DIR}/bin:${PATH}
+export PYTHONPATH=${USD_INSTALL_DIR}/lib/python
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+USDView example
+---------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+usdview ./extras/usd/tutorials/Houdini/Toaster.usd
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Should be able to use CLion as a development envrionment
+--------------------------------------------------------
+
+The *CLion* setup should include the following in the cmake config:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~
--DBOOST_ROOT=${ROOT}/boost/1.61.0
--DTBB_ROOT_DIR=${ROOT}/tbb/tbb43_20150611
--DTBB_LIBRARY=${ROOT}/tbb/tbb43_20150611/lib
--DOPENEXR_LOCATION=${ROOT}/openexr
--DOIIO_LOCATION=${ROOT}/oiio/1.6.14
--DGLEW_LOCATION=${ROOT}/glew/1.11.0
--DOPENSUBDIV_ROOT_DIR=${ROOT}/opensubd/3.0.3
--DPTEX_LOCATION=${ROOT}/ptex/2.0.42
--DPXR_BUILD_USD_IMAGING=OFF
+-DBOOST_ROOT=${USD_INSTALL_DIR}
+-DTBB_ROOT_DIR=${USD_INSTALL_DIR}
+-DTBB_LIBRARY=${USD_INSTALL_DIR}/lib
+-DOPENEXR_LOCATION=${USD_INSTALL_DIR}
+-DOIIO_LOCATION=${USD_INSTALL_DIR}
+-DGLEW_LOCATION=${USD_INSTALL_DIR}
+-DOPENSUBDIV_ROOT_DIR=${USD_INSTALL_DIR}
+-DPXR_BUILD_DOCUMENTATION=ON
+-DPXR_BUILD_IMAGING=ON
+-DPXR_BUILD_USD_IMAGING=ON
+-DPXR_ENABLE_PTEX_SUPPORT=OFF
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Problem CLion fails to index the project correctly. In that the header libraries aren't included in the database correctly.
+
 
 Overview of Package
 ===================
@@ -29,21 +111,28 @@ Overview of Package
         * examples
         * tutorials
 * pxr
-    * base
+    * base **utility functions**
         * lib
+            * [arch - arch specific](https://graphics.pixar.com/usd/docs/api/arch_page_front.html)
+            * [gf - graphics foundations](https://graphics.pixar.com/usd/docs/api/gf_page_front.html)
+            * [js - json](https://graphics.pixar.com/usd/docs/api/js_page_front.html)
+            * [tf - tools foundation](https://graphics.pixar.com/usd/docs/api/tf_page_front.html)
+            * [tracelite - profling instrumentation](https://graphics.pixar.com/usd/docs/api/tracelite_page_front.html)
+            * [vt - value types](https://graphics.pixar.com/usd/docs/api/vt_page_front.html)
+            * [work - multithreaded dispatch](https://graphics.pixar.com/usd/docs/api/work_page_front.html)
     * imaging
         * lib
             * cameraUtil
-            * garch
-            * glf
-            * hd
+            * garch **architecture specific GL utils**
+            * glf **OpenGL foundation library**
+            * hd **Hydtra**
             * hdSt
-            * hdx
-            * hf
-            * pxOsd
+            * hdx - hydra extensions **Shadow & ID pass for hydra?**
+            * hf **plugin system for hydra**
+            * pxOsd **integrate Open Sub Div**
         * plugin
-            * hdEmbree
-            * hdStream
+            * hdEmbree **Embree backend for hydra?**
+            * hdStream **Perhaps this relates to hdSt?**
     * usd
         * bin
             * sdfdump
@@ -55,24 +144,28 @@ Overview of Package
             * usdstitch
             * usdstitchclips
         * lib
-            * ar
-            * kind
-            * pcp
-            * sdf
-            * usd
-            * usdGeom
-            * usdHydra
-            * usdLux
-            * usdRi
-            * usdShade
-            * usdSkel
-            * usdUI
-            * usdUtils
+            * [ar - assset resolution](https://graphics.pixar.com/usd/docs/api/ar_page_front.html)
+            * [kind - extensible categorisation](https://graphics.pixar.com/usd/docs/api/kind_page_front.html)
+            * [pcp - primcache population - layering and referencing](https://graphics.pixar.com/usd/docs/api/pcp_page_front.html)
+            * [sdf - scene description foundation](https://graphics.pixar.com/usd/docs/api/sdf_page_front.html)
+            * [usd - USD core library](https://graphics.pixar.com/usd/docs/api/usd_page_front.html)
+            * [usdGeom - Geometry Schema](https://graphics.pixar.com/usd/docs/api/usd_geom_page_front.html)
+            * [usdHydra - Hydra Schemas](https://graphics.pixar.com/usd/docs/api/usd_hydra_page_front.html)
+            * [usdLux - Lights](https://graphics.pixar.com/usd/docs/api/usd_lux_page_front.html)
+            * [usdRi - Renderman](https://graphics.pixar.com/usd/docs/api/usd_ri_page_front.html)
+            * [usdShade - shading networks](https://graphics.pixar.com/usd/docs/api/usd_shade_page_front.html)
+            * [usdSkel - skeletal skinning](https://graphics.pixar.com/usd/docs/api/usd_skel_page_front.html)
+            * [usdUI - UI elements](https://graphics.pixar.com/usd/docs/api/usd_u_i_page_front.html)
+            * [usdUtils - Misc utilities](https://graphics.pixar.com/usd/docs/api/usd_utils_page_front.html)
         * plugin
-            * usdAbc
+            * [usdAbc - Alembic plugin for USD](https://graphics.pixar.com/usd/docs/api/usdabc_page_front.html)
     * usdImaging
         * bin
+            *  usdView **viewer application for USD files**
         * lib
+            * usdImaging
+            * usdImagingGL
+            * usdImagingq
 * third_party
     * houdini
         * lib
@@ -85,7 +178,12 @@ Overview of Package
         * lib
         * plugin
 
+Misc Other Notes
+========================================
 
+Looks like the linking of OIIO requires RPATH to be set correctly to find dependant libraries using the RPATH of elf header
 
-
+~~~~~~~~~~~~~~
+sudo chrpath -r "${ROOT}/boost/1.55.0/lib:${ROOT}/openexr/2.2.0/lib" ${ROOT}/oiio/1.6.14/lib/libOpenImageIO_Util.so
+~~~~~~~~~~~~~~
 <!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js"></script><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
