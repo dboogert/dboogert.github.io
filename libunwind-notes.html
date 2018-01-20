@@ -1,0 +1,65 @@
+<meta charset="utf-8" emacsmode="-*- markdown -*-"><link rel="stylesheet" href="https://casual-effects.com/markdeep/latest/apidoc.css?">
+
+                **Experiments with libunwind**
+
+## Building libunwind
+
+* official mirror 
+    * [https://github.com/libunwind/libunwind](https://github.com/libunwind/libunwind)
+* Documentation
+    * [http://www.nongnu.org/libunwind/docs.html](http://www.nongnu.org/libunwind/docs.html)
+
+### Commands
+
+~~~
+export INSTALL_PATH=/home/don/install/libunwind
+
+./autogen.sh
+./configure --prefix=${INSTALL_PATH}
+make -j 2 install prefix=${INSTALL_PATH}
+~~~
+
+### Example library
+
+~~~
+void *malloc(size_t size);
+void free(void *ptr);
+void *calloc(size_t nmemb, size_t size);
+void *realloc(void *ptr, size_t size);
+~~~
+
+* Functions we need to implement
+    * [https://linux.die.net/man/3/malloc](https://linux.die.net/man/3/malloc)
+
+
+#### How to pass through to the previous implementation
+
+[https://linux.die.net/man/3/dlsym](https://linux.die.net/man/3/dlsym)
+
+~~~
+typedef void* (*fn_malloc)(size_t);
+
+extern "C"
+{
+    void *malloc(size_t size)
+    {
+        fn_malloc o_malloc;
+        o_malloc = (fn_malloc) dlsym(RTLD_NEXT,"malloc");
+        return o_malloc(size);
+    }
+}
+~~~
+
+####  Go from a IP address to symbol
+
+[http://man7.org/linux/man-pages/man3/dladdr.3.html](http://man7.org/linux/man-pages/man3/dladdr.3.html)
+
+
+~~~
+// IP = instruction pointer address
+Dl_info info;
+dladdr( (void*) ip, &info);
+~~~
+
+<script>markdeepOptions={tocStyle:'medium'};</script>
+<!-- Markdeep: --><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?"></script>
