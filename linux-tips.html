@@ -1,0 +1,28 @@
+<meta charset="utf-8" emacsmode="-*- markdown -*-"><link rel="stylesheet" href="https://casual-effects.com/markdeep/latest/journal.css?">
+
+# Weekly Linux Development Tips
+
+## 1 Viewing which shared object a process has loaded
+
+To quickly view what shared objects are loaded by a process, say with pid 1234
+
+```
+cat /proc/1234/maps
+```
+ 
+It's useful to check if you've actually loaded a particular shared object.
+
+```
+cat /proc/1234/maps | grep libfuse
+```
+
+Might return a line like this (amongst others):
+
+```
+7f2848490000–7f28484ba000 r-xp 00000000 08:01 18092636 /lib/x86_64-linux-gnu/libfuse.so.2.9.7
+```
+
+
+
+<style class="fallback">body{visibility:hidden}</style><script>markdeepOptions={tocStyle:'long'};</script>
+<!-- Markdeep: --><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?" charset="utf-8"></script>
